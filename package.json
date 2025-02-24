@@ -13,6 +13,7 @@
   "author": "daniel-schreiber@gmx.de",
   "license": "MIT",
   "devDependencies": {
+    "@types/bun": "^1.2.3",
     "typescript": "^5.7.3"
   }
 }
