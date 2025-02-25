@@ -13,3 +13,12 @@ If you have an XML file that you want to read, modify, and write back, this libr
 - Retains attribute quotes (single or double) and whitespace before and after the attribute name
 - Retains XML processing instructions (including the XML declaration)
 - Retains CDATA sections
+
+## Development
+
+This project is written in Typescript and uses Bun.
+
+```bash
+bun install
+bun test
+```

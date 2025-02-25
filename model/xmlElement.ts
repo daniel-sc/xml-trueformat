@@ -81,6 +81,15 @@ export class XmlElement extends XmlNode {
     this.joinTextNodes();
   }
 
+  getAttribute(name: string): XmlAttribute | undefined {
+    return this.attributes.find((attr) => attr.name === name);
+  }
+
+  /** returns unescaped attribute value or undefined if not found */
+  getAttributeValue(name: string): string | undefined {
+    return this.getAttribute(name)?.unescapeValue();
+  }
+
   toString(): string {
     let openTag = `<${this.tagName}`;
     for (const attr of this.attributes) {

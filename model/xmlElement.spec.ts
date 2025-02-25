@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'bun:test';
 import { XmlElement } from './xmlElement';
 import { XmlText } from './xmlText';
+import { XmlAttribute } from './xmlAttribute';
 
 describe('XmlElement', () => {
   describe('addElement', () => {
@@ -78,6 +79,17 @@ describe('XmlElement', () => {
           `<test>\n  <new-child></new-child>\n  <child></child>\n</test>`,
         );
       });
+    });
+  });
+  describe('getAttributeValue', () => {
+    it('should return the value of the attribute', () => {
+      const element = new XmlElement('test', [new XmlAttribute('key', 'value &amp;')]);
+      expect(element.getAttributeValue('key')).toBe('value &');
+    });
+
+    it('should return undefined if the attribute does not exist', () => {
+      const element = new XmlElement('test');
+      expect(element.getAttributeValue('key')).toBeUndefined();
     });
   });
 });
