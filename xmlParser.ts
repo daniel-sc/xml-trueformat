@@ -145,7 +145,7 @@ export class XmlParser {
       }
       const wsBeforeEqual = this.readWhitespace();
       let wsAfterEqual = '';
-      let quote = '';
+      let quote = '"';
       let value = '';
       if (this.peek() === '=') {
         this.pos++; // skip "="
@@ -163,8 +163,9 @@ export class XmlParser {
           value = this.input.substring(startVal, endVal);
           this.pos = endVal + 1; // skip closing quote
         } else {
-          // Unquoted attribute value.
-          value = this.readUntil(/[\s>]/);
+          throw new Error(
+            `Expected quote character at position ${this.pos} for attribute "${attrName}"`,
+          );
         }
       }
       attributes.push(
@@ -174,7 +175,7 @@ export class XmlParser {
           leadingWs,
           wsBeforeEqual,
           wsAfterEqual,
-          quote,
+          quote === '"' || quote === "'" ? quote : '"',
         ),
       );
     }

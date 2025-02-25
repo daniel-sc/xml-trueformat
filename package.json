@@ -4,7 +4,8 @@
   "description": "XML parser that 100% retains all formatting for creating identical XML on roundtrips",
   "scripts": {
     "test": "bun test --coverage",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [
     "XML",
