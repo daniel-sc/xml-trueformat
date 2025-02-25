@@ -48,35 +48,20 @@ describe("XmlParser", () => {
       "",
       "'",
     );
-    const elem = new XmlElement(
-      "note",
-      [attrDate, attrAuthor],
-      " ",
-      false,
-      [],
-      "",
-    );
-    elem.addChild(new XmlText("Some content"));
+    const elem = new XmlElement('note', [attrDate, attrAuthor], [new XmlText("Some content")], ' ', false, '');
     const expected = `<note date= "2025-02-22" author ='John Doe' >Some content</note>`;
     expect(elem.toString()).toBe(expected);
   });
 
   it("Self-closing element", () => {
-    const elem = new XmlElement("br", [], " ", true, [], "");
+    const elem = new XmlElement('br', [], [], ' ', true, '');
     const expected = `<br />`;
     expect(elem.toString()).toBe(expected);
   });
 
   it("Nested elements", () => {
-    const child = new XmlElement(
-      "child",
-      [],
-      " ",
-      false,
-      [new XmlText("Text")],
-      "",
-    );
-    const root = new XmlElement("root", [], "", false, [child], "");
+    const child = new XmlElement('child', [], [new XmlText('Text')], ' ', false, '');
+    const root = new XmlElement('root', [], [child], '', false, '');
     const expected = `<root><child >Text</child></root>`;
     expect(root.toString()).toBe(expected);
   });

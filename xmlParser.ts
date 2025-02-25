@@ -231,14 +231,7 @@ export class XmlParser {
         );
       }
     }
-    return new XmlElement(
-      tagName,
-      attributes,
-      attrTrailingWs,
-      selfClosing,
-      children,
-      closeTagWs,
-    );
+    return new XmlElement(tagName, attributes, children, attrTrailingWs, selfClosing, closeTagWs);
   }
 
   // Reads a name (letters, digits, underscore, hyphen, colon, period).
