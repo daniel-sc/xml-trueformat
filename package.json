@@ -1,11 +1,14 @@
 {
   "name": "xml-integrity",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "XML parser that 100% retains all formatting for creating identical XML on roundtrips",
+  "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "test": "bun test --coverage",
     "format": "prettier --write .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "pack": "bun tsc && bun pm pack"
   },
   "keywords": [
     "XML",
