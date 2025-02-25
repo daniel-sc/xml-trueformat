@@ -5,6 +5,7 @@ Typescript XML parser that 100% retains all formatting for creating identical XM
 If you have an XML file that you want to read, modify, and write back, this library will ensure that the output XML is formatted identical to the input XML.
 
 ## Features
+
 - Retains all whitespace and line endings
 - Retains all comments
 - Retains whether an element is self-closing or not

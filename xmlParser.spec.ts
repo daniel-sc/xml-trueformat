@@ -1,72 +1,86 @@
-import { describe, it, expect } from "bun:test";
-import { XmlText } from "./model/xmlText";
-import { XmlComment } from "./model/xmlComment";
-import { XmlProcessing } from "./model/xmlProcessing";
-import { XmlCData } from "./model/xmlCData";
-import { XmlDoctype } from "./model/xmlDoctype";
-import { XmlAttribute } from "./model/xmlAttribute";
-import { XmlElement } from "./model/xmlElement";
-import { XmlParser } from "./xmlParser";
+import { describe, it, expect } from 'bun:test';
+import { XmlText } from './model/xmlText';
+import { XmlComment } from './model/xmlComment';
+import { XmlProcessing } from './model/xmlProcessing';
+import { XmlCData } from './model/xmlCData';
+import { XmlDoctype } from './model/xmlDoctype';
+import { XmlAttribute } from './model/xmlAttribute';
+import { XmlElement } from './model/xmlElement';
+import { XmlParser } from './xmlParser';
 
-describe("XmlParser", () => {
-  it("Text node roundtrip", () => {
-    const text = "Hello, World!";
+describe('XmlParser', () => {
+  it('Text node roundtrip', () => {
+    const text = 'Hello, World!';
     const node = new XmlText(text);
     expect(node.toString()).toBe(text);
   });
 
-  it("Comment node roundtrip", () => {
-    const comment = "This is a comment";
+  it('Comment node roundtrip', () => {
+    const comment = 'This is a comment';
     const node = new XmlComment(comment);
     expect(node.toString()).toBe(`<!--${comment}-->`);
   });
 
-  it("Processing instruction", () => {
-    const node = new XmlProcessing("xml", " ", 'version="1.0"');
+  it('Processing instruction', () => {
+    const node = new XmlProcessing('xml', ' ', 'version="1.0"');
     expect(node.toString()).toBe(`<?xml version="1.0"?>`);
   });
 
-  it("CDATA section", () => {
-    const cdata = "<tag>Some data</tag>";
+  it('CDATA section', () => {
+    const cdata = '<tag>Some data</tag>';
     const node = new XmlCData(cdata);
     expect(node.toString()).toBe(`<![CDATA[${cdata}]]>`);
   });
 
-  it("DOCTYPE declaration", () => {
+  it('DOCTYPE declaration', () => {
     const content = 'note SYSTEM "Note.dtd"';
     const node = new XmlDoctype(content);
     expect(node.toString()).toBe(`<!DOCTYPE ${content}>`);
   });
 
-  it("Element with attributes and text", () => {
-    const attrDate = new XmlAttribute("date", "2025-02-22", " ", "", " ", '"');
+  it('Element with attributes and text', () => {
+    const attrDate = new XmlAttribute('date', '2025-02-22', ' ', '', ' ', '"');
     const attrAuthor = new XmlAttribute(
-      "author",
-      "John Doe",
-      " ",
-      " ",
-      "",
+      'author',
+      'John Doe',
+      ' ',
+      ' ',
+      '',
       "'",
     );
-    const elem = new XmlElement('note', [attrDate, attrAuthor], [new XmlText("Some content")], ' ', false, '');
+    const elem = new XmlElement(
+      'note',
+      [attrDate, attrAuthor],
+      [new XmlText('Some content')],
+      ' ',
+      false,
+      '',
+    );
     const expected = `<note date= "2025-02-22" author ='John Doe' >Some content</note>`;
     expect(elem.toString()).toBe(expected);
   });
 
-  it("Self-closing element", () => {
+  it('Self-closing element', () => {
     const elem = new XmlElement('br', [], [], ' ', true, '');
     const expected = `<br />`;
     expect(elem.toString()).toBe(expected);
   });
 
-  it("Nested elements", () => {
-    const child = new XmlElement('child', [], [new XmlText('Text')], ' ', false, '');
+  it('Nested elements', () => {
+    const child = new XmlElement(
+      'child',
+      [],
+      [new XmlText('Text')],
+      ' ',
+      false,
+      '',
+    );
     const root = new XmlElement('root', [], [child], '', false, '');
     const expected = `<root><child >Text</child></root>`;
     expect(root.toString()).toBe(expected);
   });
 
-  it("Full document roundtrip", () => {
+  it('Full document roundtrip', () => {
     const xmlSource = `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE note SYSTEM "Note.dtd">
 <note date="2025-02-22" author='John Doe'>
@@ -82,18 +96,18 @@ describe("XmlParser", () => {
     expect(roundtrip).toContain(`<note`);
   });
 
-  it("Error cases - mismatched closing tag", () => {
+  it('Error cases - mismatched closing tag', () => {
     const badXml = `<note><to>Jane</from></note>`;
     expect(() => XmlParser.parse(badXml)).toThrow(
-      "Unterminated element <to> starting at position 6",
+      'Unterminated element <to> starting at position 6',
     );
   });
 
-  it("Error cases - unterminated comment", () => {
+  it('Error cases - unterminated comment', () => {
     const badXml = `<!-- Comment without end`;
-    expect(() => XmlParser.parse(badXml)).toThrow("Unterminated comment");
+    expect(() => XmlParser.parse(badXml)).toThrow('Unterminated comment');
   });
-  it("should parse document with escaped values", () => {
+  it('should parse document with escaped values', () => {
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <note date="some'apos" author='some"quote'>

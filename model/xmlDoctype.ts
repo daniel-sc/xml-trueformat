@@ -1,5 +1,4 @@
-// DOCTYPE declaration.
-import { XmlNode } from "./xmlNode";
+import { XmlNode } from './xmlNode';
 
 export class XmlDoctype extends XmlNode {
   constructor(public content: string) {

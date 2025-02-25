@@ -2,9 +2,9 @@
   "name": "xml-integrity",
   "version": "0.0.1",
   "description": "XML parser that 100% retains all formatting for creating identical XML on roundtrips",
-  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "bun test --coverage",
+    "format": "prettier --write ."
   },
   "keywords": [
     "XML",

@@ -9,7 +9,7 @@ describe('XmlAttribute', () => {
     });
     it('should return "\'" unescaped', () => {
       const attribute = new XmlAttribute('test', 'a &apos; b');
-      expect(attribute.unescapeValue()).toBe('a \' b');
+      expect(attribute.unescapeValue()).toBe("a ' b");
     });
     it('should return """ unescaped', () => {
       const attribute = new XmlAttribute('test', 'a &quot; b');
@@ -36,7 +36,7 @@ describe('XmlAttribute', () => {
     });
     it('should escape "\'"', () => {
       const attribute = new XmlAttribute('test', '');
-      attribute.setValue('a \' b');
+      attribute.setValue("a ' b");
       expect(attribute.value).toBe('a &apos; b');
     });
     it('should escape """', () => {
@@ -59,6 +59,5 @@ describe('XmlAttribute', () => {
       attribute.setValue('a &amp; b');
       expect(attribute.value).toBe('a &amp;amp; b');
     });
-
   });
 });

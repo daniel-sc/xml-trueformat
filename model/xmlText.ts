@@ -4,7 +4,7 @@ import { escapeXml, unescapeXml } from '../util/escape';
 export class XmlText extends XmlNode {
   constructor(
     /** The text content of the node. Special characters are expected to be escaped! */
-    public text: string
+    public text: string,
   ) {
     super();
   }

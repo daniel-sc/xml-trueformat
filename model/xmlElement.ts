@@ -24,28 +24,45 @@ export class XmlElement extends XmlNode {
     public attrTrailingWs = '',
     public selfClosing = false,
     /** whitespace inside the closing tag before '>' */
-    public closeTagWs: string = ''
+    public closeTagWs: string = '',
   ) {
     super();
   }
 
-  addElement(child: XmlElement, options?: {
-    after?: XmlElement,
-    /** if `true` or not set, add leading whitespace analogous to sister node, to match formatting. */
-    guessFormatting?: boolean
-  }): void {
-    const index = options?.after ? this.children.indexOf(options.after) + 1 : this.children.length;
+  addElement(
+    child: XmlElement,
+    options?: {
+      after?: XmlElement;
+      before?: XmlElement;
+      /** if `true` or not set, add leading whitespace analogous to sister node, to match formatting. */
+      guessFormatting?: boolean;
+    },
+  ): void {
+    let index: number;
+    if (options?.after) {
+      index = this.children.indexOf(options.after) + 1;
+    } else if (options?.before) {
+      index = this.children.indexOf(options.before);
+      while (index > 0 && this.children[index - 1] instanceof XmlText) {
+        index--;
+      }
+    } else {
+      index = this.children.length;
+    }
+
     if (options?.guessFormatting ?? true) {
-      const sibling = this.children
+      const sibling =
+        this.children
           .slice(0, index)
           .reverse()
-          .find((c) => c instanceof XmlElement)
-        ?? this.children
-          .slice(index)
-          .find((c) => c instanceof XmlElement);
+          .find((c) => c instanceof XmlElement) ??
+        this.children.slice(index).find((c) => c instanceof XmlElement);
       if (sibling) {
         const siblingIndex = this.children.indexOf(sibling);
-        const textBefore: XmlText | undefined = siblingIndex > 0 && this.children[siblingIndex - 1] instanceof XmlText ? this.children[siblingIndex - 1] as XmlText : undefined;
+        const textBefore: XmlText | undefined =
+          siblingIndex > 0 && this.children[siblingIndex - 1] instanceof XmlText
+            ? (this.children[siblingIndex - 1] as XmlText)
+            : undefined;
         const leadingWs = textBefore?.text ?? '';
         this.addChild(index, new XmlText(leadingWs), child);
       } else {

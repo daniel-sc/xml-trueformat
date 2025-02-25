@@ -9,7 +9,7 @@ describe('XmlText', () => {
     });
     it('should return "\'" unescaped', () => {
       const text = new XmlText('a &apos; b');
-      expect(text.unescapeText()).toBe('a \' b');
+      expect(text.unescapeText()).toBe("a ' b");
     });
     it('should return """ unescaped', () => {
       const text = new XmlText('a &quot; b');
@@ -31,9 +31,9 @@ describe('XmlText', () => {
       const text = new XmlText('a " b');
       expect(text.unescapeText()).toBe('a " b');
     });
-    it('should handle unescaped \' gracefully', () => {
-      const text = new XmlText('a \' b');
-      expect(text.unescapeText()).toBe('a \' b');
+    it("should handle unescaped ' gracefully", () => {
+      const text = new XmlText("a ' b");
+      expect(text.unescapeText()).toBe("a ' b");
     });
     it('should handle unescaped > gracefully', () => {
       const text = new XmlText('a > b');
@@ -48,7 +48,7 @@ describe('XmlText', () => {
     });
     it('should escape "\'"', () => {
       const text = new XmlText('');
-      text.setText('a \' b');
+      text.setText("a ' b");
       expect(text.text).toBe('a &apos; b');
     });
     it('should escape """', () => {

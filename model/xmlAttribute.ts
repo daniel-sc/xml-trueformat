@@ -12,9 +12,8 @@ export class XmlAttribute {
     public leadingWs: string = ' ',
     public wsBeforeEqual: string = '',
     public wsAfterEqual: string = '',
-    public quote: '"' | '\'' = '"'
-  ) {
-  }
+    public quote: '"' | "'" = '"',
+  ) {}
 
   unescapeValue(): string {
     return unescapeXml(this.value);

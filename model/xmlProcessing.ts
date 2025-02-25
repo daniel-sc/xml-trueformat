@@ -1,6 +1,6 @@
 // Processing instruction node.
 // Captures the target, any whitespace after it, and the instruction data.
-import { XmlNode } from "./xmlNode";
+import { XmlNode } from './xmlNode';
 
 export class XmlProcessing extends XmlNode {
   constructor(

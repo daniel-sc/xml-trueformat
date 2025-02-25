@@ -3,15 +3,15 @@
 // -------------------------
 
 // Text node.
-import { XmlNode } from "./model/xmlNode";
-import { XmlText } from "./model/xmlText";
-import { XmlComment } from "./model/xmlComment";
-import { XmlProcessing } from "./model/xmlProcessing";
-import { XmlCData } from "./model/xmlCData";
-import { XmlDoctype } from "./model/xmlDoctype";
-import { XmlAttribute } from "./model/xmlAttribute";
-import { XmlDocument } from "./model/xmlDocument";
-import { XmlChildNode, XmlElement } from "./model/xmlElement";
+import { XmlNode } from './model/xmlNode';
+import { XmlText } from './model/xmlText';
+import { XmlComment } from './model/xmlComment';
+import { XmlProcessing } from './model/xmlProcessing';
+import { XmlCData } from './model/xmlCData';
+import { XmlDoctype } from './model/xmlDoctype';
+import { XmlAttribute } from './model/xmlAttribute';
+import { XmlDocument } from './model/xmlDocument';
+import { XmlChildNode, XmlElement } from './model/xmlElement';
 
 // A simple recursive-descent XML parser.
 // This parser makes explicit checks for termination of constructs and provides detailed error messages.
@@ -34,16 +34,16 @@ export class XmlParser {
   }
 
   parseNode(): XmlChildNode | XmlDoctype | null {
-    if (this.peek() === "<") {
-      if (this.input.startsWith("<!--", this.pos)) {
+    if (this.peek() === '<') {
+      if (this.input.startsWith('<!--', this.pos)) {
         return this.parseComment();
-      } else if (this.input.startsWith("<![CDATA[", this.pos)) {
+      } else if (this.input.startsWith('<![CDATA[', this.pos)) {
         return this.parseCData();
-      } else if (this.input.startsWith("<!DOCTYPE", this.pos)) {
+      } else if (this.input.startsWith('<!DOCTYPE', this.pos)) {
         return this.parseDoctype();
-      } else if (this.input.startsWith("<?", this.pos)) {
+      } else if (this.input.startsWith('<?', this.pos)) {
         return this.parseProcessing();
-      } else if (this.input.startsWith("</", this.pos)) {
+      } else if (this.input.startsWith('</', this.pos)) {
         // End tag encountered; let caller handle.
         return null;
       } else {
@@ -56,7 +56,7 @@ export class XmlParser {
 
   parseText(): XmlText {
     const start = this.pos;
-    while (this.pos < this.input.length && this.peek() !== "<") {
+    while (this.pos < this.input.length && this.peek() !== '<') {
       this.pos++;
     }
     const text = this.input.substring(start, this.pos);
@@ -66,7 +66,7 @@ export class XmlParser {
   parseComment(): XmlComment {
     const start = this.pos;
     this.pos += 4; // skip "<!--"
-    const end = this.input.indexOf("-->", this.pos);
+    const end = this.input.indexOf('-->', this.pos);
     if (end === -1) {
       throw new Error(`Unterminated comment starting at position ${start}`);
     }
@@ -80,7 +80,7 @@ export class XmlParser {
     this.pos += 2; // skip "<?"
     const target = this.readName();
     const wsAfterTarget = this.readWhitespace();
-    const end = this.input.indexOf("?>", this.pos);
+    const end = this.input.indexOf('?>', this.pos);
     if (end === -1) {
       throw new Error(
         `Unterminated processing instruction starting at position ${start}`,
@@ -94,7 +94,7 @@ export class XmlParser {
   parseCData(): XmlCData {
     const start = this.pos;
     this.pos += 9; // skip "<![CDATA["
-    const end = this.input.indexOf("]]>", this.pos);
+    const end = this.input.indexOf(']]>', this.pos);
     if (end === -1) {
       throw new Error(
         `Unterminated CDATA section starting at position ${start}`,
@@ -108,7 +108,7 @@ export class XmlParser {
   parseDoctype(): XmlDoctype {
     const start = this.pos;
     this.pos += 9; // skip "<!DOCTYPE"
-    const end = this.input.indexOf(">", this.pos);
+    const end = this.input.indexOf('>', this.pos);
     if (end === -1) {
       throw new Error(
         `Unterminated DOCTYPE declaration starting at position ${start}`,
@@ -121,33 +121,33 @@ export class XmlParser {
 
   parseElement(): XmlElement {
     const start = this.pos;
-    if (this.peek() !== "<") {
+    if (this.peek() !== '<') {
       throw new Error(`Expected '<' at position ${this.pos}`);
     }
     this.pos++; // skip "<"
     const tagName = this.readName();
-    if (tagName === "") {
+    if (tagName === '') {
       throw new Error(`Expected tag name at position ${this.pos}`);
     }
     const attributes: XmlAttribute[] = [];
-    let attrTrailingWs = "";
+    let attrTrailingWs = '';
     // Parse attributes until we hit ">" or "/>".
-    while (this.pos < this.input.length && !this.startsWithAny([">", "/>"])) {
+    while (this.pos < this.input.length && !this.startsWithAny(['>', '/>'])) {
       const leadingWs = this.readWhitespace();
-      if (this.startsWithAny([">", "/>"])) {
+      if (this.startsWithAny(['>', '/>'])) {
         // The whitespace belongs to the element.
         attrTrailingWs = leadingWs;
         break;
       }
       const attrName = this.readName();
-      if (attrName === "") {
+      if (attrName === '') {
         throw new Error(`Expected attribute name at position ${this.pos}`);
       }
       const wsBeforeEqual = this.readWhitespace();
-      let wsAfterEqual = "";
-      let quote = "";
-      let value = "";
-      if (this.peek() === "=") {
+      let wsAfterEqual = '';
+      let quote = '';
+      let value = '';
+      if (this.peek() === '=') {
         this.pos++; // skip "="
         wsAfterEqual = this.readWhitespace();
         quote = this.peek();
@@ -180,17 +180,17 @@ export class XmlParser {
     }
     // End of open tag.
     let selfClosing = false;
-    if (this.startsWithAny(["/>"])) {
+    if (this.startsWithAny(['/>'])) {
       selfClosing = true;
       this.pos += 2;
-    } else if (this.peek() === ">") {
+    } else if (this.peek() === '>') {
       this.pos++;
     } else {
       throw new Error(`Expected '>' or '/>' at position ${this.pos}`);
     }
     // Parse children if not self-closing.
     const children: XmlChildNode[] = [];
-    let closeTagWs = "";
+    let closeTagWs = '';
     if (!selfClosing) {
       while (this.pos < this.input.length) {
         if (this.input.startsWith(`</${tagName}`, this.pos)) {
@@ -218,7 +218,7 @@ export class XmlParser {
           );
         }
         closeTagWs = this.readWhitespace();
-        if (this.peek() === ">") {
+        if (this.peek() === '>') {
           this.pos++; // skip ">"
         } else {
           throw new Error(
@@ -231,7 +231,14 @@ export class XmlParser {
         );
       }
     }
-    return new XmlElement(tagName, attributes, children, attrTrailingWs, selfClosing, closeTagWs);
+    return new XmlElement(
+      tagName,
+      attributes,
+      children,
+      attrTrailingWs,
+      selfClosing,
+      closeTagWs,
+    );
   }
 
   // Reads a name (letters, digits, underscore, hyphen, colon, period).
