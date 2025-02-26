@@ -24,50 +24,64 @@ export class XmlElement extends XmlNode {
     public attrTrailingWs = '',
     public selfClosing = false,
     /** whitespace inside the closing tag before '>' */
-    public closeTagWs: string = '',
+    public closeTagWs: string = ''
   ) {
     super();
   }
 
+  getElementsByName(name: string): XmlElement[] {
+    return this.children.filter((c): c is XmlElement => c instanceof XmlElement && c.tagName === name);
+  }
+
+  getFirstElementByName(name: string): XmlElement | undefined {
+    for (const child of this.children) {
+      if (child instanceof XmlElement && child.tagName === name) {
+        return child;
+      }
+    }
+    return undefined;
+  }
+
+  /**
+   * Adds a child element to this element.
+   * This method tries to match existing formatting/whitespace.
+   */
   addElement(
     child: XmlElement,
     options?: {
       after?: XmlElement;
       before?: XmlElement;
-      /** if `true` or not set, add leading whitespace analogous to sister node, to match formatting. */
-      guessFormatting?: boolean;
-    },
+    }
   ): void {
     let index: number;
     if (options?.after) {
       index = this.children.indexOf(options.after) + 1;
     } else if (options?.before) {
       index = this.children.indexOf(options.before);
-      while (index > 0 && this.children[index - 1] instanceof XmlText) {
-        index--;
-      }
     } else {
       index = this.children.length;
     }
+    // move before any existing whitespace, as we prepend own whitespace:
+    while (index > 0 && this.children[index - 1] instanceof XmlText && (this.children[index - 1] as XmlText).isWhitespace()) {
+      index--;
+    }
 
-    if (options?.guessFormatting ?? true) {
-      const sibling =
-        this.children
-          .slice(0, index)
-          .reverse()
-          .find((c) => c instanceof XmlElement) ??
-        this.children.slice(index).find((c) => c instanceof XmlElement);
-      if (sibling) {
-        const siblingIndex = this.children.indexOf(sibling);
-        const textBefore: XmlText | undefined =
-          siblingIndex > 0 && this.children[siblingIndex - 1] instanceof XmlText
-            ? (this.children[siblingIndex - 1] as XmlText)
-            : undefined;
-        const leadingWs = textBefore?.text ?? '';
-        this.addChild(index, new XmlText(leadingWs), child);
-      } else {
-        this.addChild(index, child);
-      }
+    const sibling =
+      this.children
+        .slice(0, index)
+        .reverse()
+        .find((c) => c instanceof XmlElement) ??
+      this.children.slice(index).find((c) => c instanceof XmlElement);
+    if (sibling) {
+      const siblingIndex = this.children.indexOf(sibling);
+      const textBefore: XmlText | undefined =
+        siblingIndex > 0
+        && this.children[siblingIndex - 1] instanceof XmlText
+        && (this.children[siblingIndex - 1] as XmlText).isWhitespace()
+          ? (this.children[siblingIndex - 1] as XmlText)
+          : undefined;
+      const leadingWs = textBefore?.text ?? '';
+      this.addChild(index, new XmlText(leadingWs), child);
     } else {
       this.addChild(index, child);
     }
@@ -88,6 +102,20 @@ export class XmlElement extends XmlNode {
   /** returns unescaped attribute value or undefined if not found */
   getAttributeValue(name: string): string | undefined {
     return this.getAttribute(name)?.unescapeValue();
+  }
+
+  /**
+   * Sets the value of an attribute.
+   * If the attribute does not exist, it is created (formatting analogous to exising attributes).
+   */
+  setAttributeValue(name: string, unescapedValue: string): void {
+    const attr = this.getAttribute(name);
+    if (attr) {
+      attr.setValue(unescapedValue);
+    } else {
+      const copyFromAttribute = this.attributes.at(-1);
+      this.attributes.push(new XmlAttribute(name, unescapedValue, copyFromAttribute?.leadingWs, copyFromAttribute?.wsBeforeEqual, copyFromAttribute?.wsAfterEqual, copyFromAttribute?.quote));
+    }
   }
 
   toString(): string {

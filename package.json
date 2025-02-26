@@ -1,14 +1,25 @@
 {
   "name": "xml-integrity",
-  "version": "0.0.2",
+  "version": "0.0.1",
   "description": "XML parser that 100% retains all formatting for creating identical XML on roundtrips",
-  "main": "index.js",
-  "types": "index.d.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "types": "./dist/types/index.d.ts"
+    }
+  },
   "scripts": {
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:esm": "bun build index.ts --outdir dist/esm --format=esm --dts",
+    "build:cjs": "bun build index.ts --outdir dist/cjs --format=cjs",
     "test": "bun test --coverage",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
-    "pack": "bun tsc && bun pm pack"
+    "pack": "bun run build:types && bun run build:esm && bun run build:cjs && bun pm pack"
   },
   "keywords": [
     "XML",

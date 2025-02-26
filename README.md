@@ -14,6 +14,37 @@ If you have an XML file that you want to read, modify, and write back, this libr
 - Retains XML processing instructions (including the XML declaration)
 - Retains CDATA sections
 
+## Example
+
+The following XML:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <!-- my comment -->
+  <element attribute="value" />
+  <element attribute='value'></element>
+</root>
+```
+
+Will get parsed by `XmlParser.parse(..)` to:
+
+```ts
+new XmlDocument([
+  new XmlProcessing('xml',' ', 'version="1.0" encoding="UTF-8"'),
+  new XmlText('\n'),
+  new XmlElement('root', [], [
+    new XmlText('\n  '),
+    new XmlComment(' my comment '),
+    new XmlText('\n  '),
+    new XmlElement('element', [new XmlAttribute('attribute', 'value')], [], ' ', true),
+    new XmlText('\n  '),
+    new XmlElement('element', [new XmlAttribute('attribute', 'value', ' ', '', '', "'")], [], '', false),
+    new XmlText('\n')
+  ])
+]);
+```
+
 ## Development
 
 This project is written in Typescript and uses Bun.

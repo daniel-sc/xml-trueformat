@@ -3,6 +3,12 @@ import { XmlText } from './xmlText';
 
 describe('XmlText', () => {
   describe('unescapeText', () => {
+    it('Text node roundtrip', () => {
+      const text = 'Hello, World!';
+      const node = new XmlText(text);
+      expect(node.toString()).toBe(text);
+    });
+
     it('should return "&" unescaped', () => {
       const text = new XmlText('a &amp; b');
       expect(text.unescapeText()).toBe('a & b');
@@ -70,6 +76,16 @@ describe('XmlText', () => {
       const text = new XmlText('');
       text.setText('a &amp; b');
       expect(text.text).toBe('a &amp;amp; b');
+    });
+  });
+  describe('isWhitespace', () => {
+    it('should return true for whitespace', () => {
+      const text = new XmlText(' \n\t');
+      expect(text.isWhitespace()).toBe(true);
+    });
+    it('should return false for non-whitespace', () => {
+      const text = new XmlText(' a ');
+      expect(text.isWhitespace()).toBe(false);
     });
   });
 });

@@ -17,6 +17,10 @@ export class XmlText extends XmlNode {
     this.text = escapeXml(unescapedText);
   }
 
+  public isWhitespace(): boolean {
+    return this.text.trim() === '';
+  }
+
   toString(): string {
     return this.text;
   }

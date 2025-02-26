@@ -19,6 +19,10 @@ export class XmlParser {
   pos: number = 0;
   constructor(public input: string) {}
 
+  static parseFragment(xml: string): XmlChildNode[] {
+    return XmlParser.parse(`<root>${xml}</root>`).getRootElement().children;
+  }
+
   static parse(xml: string): XmlDocument {
     const parser = new XmlParser(xml);
     const children: XmlNode[] = [];

@@ -1,87 +1,17 @@
-import { describe, it, expect } from 'bun:test';
+import { describe, expect, it } from 'bun:test';
 import { XmlText } from './model/xmlText';
 import { XmlComment } from './model/xmlComment';
 import { XmlProcessing } from './model/xmlProcessing';
-import { XmlCData } from './model/xmlCData';
-import { XmlDoctype } from './model/xmlDoctype';
 import { XmlAttribute } from './model/xmlAttribute';
 import { XmlElement } from './model/xmlElement';
 import { XmlParser } from './xmlParser';
+import { XmlDocument } from './model/xmlDocument';
 
 describe('XmlParser', () => {
-  it('Text node roundtrip', () => {
-    const text = 'Hello, World!';
-    const node = new XmlText(text);
-    expect(node.toString()).toBe(text);
-  });
+  describe('parse', () => {
 
-  it('Comment node roundtrip', () => {
-    const comment = 'This is a comment';
-    const node = new XmlComment(comment);
-    expect(node.toString()).toBe(`<!--${comment}-->`);
-  });
-
-  it('Processing instruction', () => {
-    const node = new XmlProcessing('xml', ' ', 'version="1.0"');
-    expect(node.toString()).toBe(`<?xml version="1.0"?>`);
-  });
-
-  it('CDATA section', () => {
-    const cdata = '<tag>Some data</tag>';
-    const node = new XmlCData(cdata);
-    expect(node.toString()).toBe(`<![CDATA[${cdata}]]>`);
-  });
-
-  it('DOCTYPE declaration', () => {
-    const content = 'note SYSTEM "Note.dtd"';
-    const node = new XmlDoctype(content);
-    expect(node.toString()).toBe(`<!DOCTYPE ${content}>`);
-  });
-
-  it('Element with attributes and text', () => {
-    const attrDate = new XmlAttribute('date', '2025-02-22', ' ', '', ' ', '"');
-    const attrAuthor = new XmlAttribute(
-      'author',
-      'John Doe',
-      ' ',
-      ' ',
-      '',
-      "'",
-    );
-    const elem = new XmlElement(
-      'note',
-      [attrDate, attrAuthor],
-      [new XmlText('Some content')],
-      ' ',
-      false,
-      '',
-    );
-    const expected = `<note date= "2025-02-22" author ='John Doe' >Some content</note>`;
-    expect(elem.toString()).toBe(expected);
-  });
-
-  it('Self-closing element', () => {
-    const elem = new XmlElement('br', [], [], ' ', true, '');
-    const expected = `<br />`;
-    expect(elem.toString()).toBe(expected);
-  });
-
-  it('Nested elements', () => {
-    const child = new XmlElement(
-      'child',
-      [],
-      [new XmlText('Text')],
-      ' ',
-      false,
-      '',
-    );
-    const root = new XmlElement('root', [], [child], '', false, '');
-    const expected = `<root><child >Text</child></root>`;
-    expect(root.toString()).toBe(expected);
-  });
-
-  it('Full document roundtrip', () => {
-    const xmlSource = `<?xml version="1.0" encoding="UTF-8"?>
+    it('Full document roundtrip', () => {
+      const xmlSource = `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE note SYSTEM "Note.dtd">
 <note date="2025-02-22" author='John Doe'>
   <to><![CDATA[Jane]]></to>
@@ -89,26 +19,47 @@ describe('XmlParser', () => {
   <body>Don't forget to check the XML parser!</body>
   <!--This is a comment-->
 </note>`;
-    const doc = XmlParser.parse(xmlSource);
-    const roundtrip = doc.toString();
-    expect(roundtrip).toContain(`<?xml`);
-    expect(roundtrip).toContain(`<!DOCTYPE note SYSTEM "Note.dtd">`);
-    expect(roundtrip).toContain(`<note`);
-  });
+      const doc = XmlParser.parse(xmlSource);
+      const roundtrip = doc.toString();
+      expect(roundtrip).toEqual(xmlSource);
+    });
 
-  it('Error cases - mismatched closing tag', () => {
-    const badXml = `<note><to>Jane</from></note>`;
-    expect(() => XmlParser.parse(badXml)).toThrow(
-      'Unterminated element <to> starting at position 6',
-    );
-  });
+    it('should parse complex example', () => {
+      const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <!-- my comment -->
+  <element attribute="value" />
+  <element attribute='value'></element>
+</root>`;
+      const doc = XmlParser.parse(xml);
+      expect(doc).toEqual(new XmlDocument([
+        new XmlProcessing('xml',' ', 'version="1.0" encoding="UTF-8"'),
+        new XmlText('\n'),
+        new XmlElement('root', [], [
+          new XmlText('\n  '),
+          new XmlComment(' my comment '),
+          new XmlText('\n  '),
+          new XmlElement('element', [new XmlAttribute('attribute', 'value')], [], ' ', true),
+          new XmlText('\n  '),
+          new XmlElement('element', [new XmlAttribute('attribute', 'value', ' ', '', '', "'")], [], '', false),
+          new XmlText('\n')
+        ])
+      ]));
+    });
 
-  it('Error cases - unterminated comment', () => {
-    const badXml = `<!-- Comment without end`;
-    expect(() => XmlParser.parse(badXml)).toThrow('Unterminated comment');
-  });
-  it('should parse document with escaped values', () => {
-    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+    it('Error cases - mismatched closing tag', () => {
+      const badXml = `<note><to>Jane</from></note>`;
+      expect(() => XmlParser.parse(badXml)).toThrow(
+        'Unterminated element <to> starting at position 6'
+      );
+    });
+
+    it('Error cases - unterminated comment', () => {
+      const badXml = `<!-- Comment without end`;
+      expect(() => XmlParser.parse(badXml)).toThrow('Unterminated comment');
+    });
+    it('should parse document with escaped values', () => {
+      const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <note date="some'apos" author='some"quote'>
     <to><![CDATA[<inline-that-is-not-closed>]]></to>
@@ -117,7 +68,19 @@ describe('XmlParser', () => {
     <!--This is <a> comment-->
   </note>
 </root>`;
-    const doc = XmlParser.parse(xml);
-    expect(doc.toString()).toBe(xml);
+      const doc = XmlParser.parse(xml);
+      expect(doc.toString()).toBe(xml);
+    });
+  });
+  describe('parseFragment', () => {
+    it('should parse fragment starting with text', () => {
+      const fragment = 'Hello, <my /> World!';
+      const nodes = XmlParser.parseFragment(fragment);
+      expect(nodes).toEqual([
+        new XmlText('Hello, '),
+        new XmlElement('my', [], [], ' ', true),
+        new XmlText(' World!')
+      ]);
+    });
   });
 });

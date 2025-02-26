@@ -3,3 +3,5 @@
 
 *.spec.ts
 *.spec.js
+
+*.tgz
