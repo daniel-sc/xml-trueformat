@@ -25,7 +25,11 @@
     "XML",
     "typescript"
   ],
-  "author": "daniel-schreiber@gmx.de",
+  "author": "Daniel Schreiber <daniel-schreiber@gmx.de>",
+  "homepage": "https://github.com/daniel-sc/xml-integrity",
+  "bugs": {
+    "url": "https://github.com/daniel-sc/xml-integrity/issues"
+  },
   "license": "MIT",
   "devDependencies": {
     "@types/bun": "^1.2.3",
