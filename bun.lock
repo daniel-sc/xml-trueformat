@@ -2,7 +2,7 @@
   "lockfileVersion": 1,
   "workspaces": {
     "": {
-      "name": "xml-integrity",
+      "name": "xml-trueformat",
       "devDependencies": {
         "@types/bun": "^1.2.3",
         "prettier": "3.5.2",

@@ -1,5 +1,5 @@
 {
-  "name": "xml-integrity",
+  "name": "xml-trueformat",
   "version": "0.0.1",
   "description": "XML parser that 100% retains all formatting for creating identical XML on roundtrips",
   "main": "./dist/cjs/index.js",
@@ -26,9 +26,9 @@
     "typescript"
   ],
   "author": "Daniel Schreiber <daniel-schreiber@gmx.de>",
-  "homepage": "https://github.com/daniel-sc/xml-integrity",
+  "homepage": "https://github.com/daniel-sc/xml-trueformat",
   "bugs": {
-    "url": "https://github.com/daniel-sc/xml-integrity/issues"
+    "url": "https://github.com/daniel-sc/xml-trueformat/issues"
   },
   "license": "MIT",
   "devDependencies": {

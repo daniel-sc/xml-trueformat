@@ -1,6 +1,6 @@
-[![npm](https://img.shields.io/npm/v/xml-integrity)](https://www.npmjs.com/package/xml-integrity)
+[![npm](https://img.shields.io/npm/v/xml-trueformat)](https://www.npmjs.com/package/xml-trueformat)
 
-# xml-integrity
+# xml-trueformat
 
 Typescript XML parser that 100% retains all formatting for creating identical XML on roundtrips.
 
