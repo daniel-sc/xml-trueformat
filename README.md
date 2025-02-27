@@ -51,6 +51,8 @@ new XmlDocument([
 ]);
 ```
 
+And serializing this again with `XmlDocument.toString()` will exactly give the original XML!
+
 ## Development
 
 This project is written in Typescript and uses Bun.
