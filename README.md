@@ -1,4 +1,5 @@
 [![npm](https://img.shields.io/npm/v/xml-trueformat)](https://www.npmjs.com/package/xml-trueformat)
+[![Coverage Status](https://coveralls.io/repos/github/daniel-sc/xml-trueformat/badge.svg?branch=main)](https://coveralls.io/github/daniel-sc/xml-trueformat?branch=main)
 
 # xml-trueformat
 
