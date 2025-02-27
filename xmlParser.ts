@@ -267,18 +267,6 @@ export class XmlParser {
     return this.input.substring(start, this.pos);
   }
 
-  // Reads until the given pattern is matched.
-  readUntil(pattern: RegExp): string {
-    const start = this.pos;
-    while (
-      this.pos < this.input.length &&
-      !pattern.test(this.input[this.pos])
-    ) {
-      this.pos++;
-    }
-    return this.input.substring(start, this.pos);
-  }
-
   // Helper: check if input at current position starts with any string in the list.
   startsWithAny(strings: string[]): boolean {
     for (const s of strings) {

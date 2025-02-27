@@ -6,6 +6,7 @@ import { XmlAttribute } from './model/xmlAttribute';
 import { XmlElement } from './model/xmlElement';
 import { XmlParser } from './xmlParser';
 import { XmlDocument } from './model/xmlDocument';
+import { XmlCData } from './model/xmlCData';
 
 describe('XmlParser', () => {
   describe('parse', () => {
@@ -28,8 +29,9 @@ describe('XmlParser', () => {
       const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <root>
   <!-- my comment -->
-  <element attribute="value" />
-  <element attribute='value'></element>
+  <self-closing attribute="value with double quotes" />
+  <non-self-closing attribute='value with single quotes'></non-self-closing>
+  <element-with-cdata><![CDATA[<html>]]></element-with-cdata>
 </root>`;
       const doc = XmlParser.parse(xml);
       expect(doc).toEqual(new XmlDocument([
@@ -39,9 +41,11 @@ describe('XmlParser', () => {
           new XmlText('\n  '),
           new XmlComment(' my comment '),
           new XmlText('\n  '),
-          new XmlElement('element', [new XmlAttribute('attribute', 'value')], [], ' ', true),
+          new XmlElement('self-closing', [new XmlAttribute('attribute', 'value with double quotes')], [], ' ', true),
           new XmlText('\n  '),
-          new XmlElement('element', [new XmlAttribute('attribute', 'value', ' ', '', '', "'")], [], '', false),
+          new XmlElement('non-self-closing', [new XmlAttribute('attribute', 'value with single quotes', ' ', '', '', "'")], [], '', false),
+          new XmlText('\n  '),
+          new XmlElement('element-with-cdata', [], [new XmlCData('<html>')]),
           new XmlText('\n')
         ])
       ]));

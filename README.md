@@ -24,8 +24,9 @@ The following XML:
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
   <!-- my comment -->
-  <element attribute="value" />
-  <element attribute='value'></element>
+  <self-closing attribute="value with double quotes" />
+  <non-self-closing attribute='value with single quotes'></non-self-closing>
+  <element-with-cdata><![CDATA[<html>]]></element-with-cdata>
 </root>
 ```
 
@@ -39,9 +40,11 @@ new XmlDocument([
     new XmlText('\n  '),
     new XmlComment(' my comment '),
     new XmlText('\n  '),
-    new XmlElement('element', [new XmlAttribute('attribute', 'value')], [], ' ', true),
+    new XmlElement('self-closing', [new XmlAttribute('attribute', 'value with double quotes')], [], ' ', true),
     new XmlText('\n  '),
-    new XmlElement('element', [new XmlAttribute('attribute', 'value', ' ', '', '', "'")], [], '', false),
+    new XmlElement('non-self-closing', [new XmlAttribute('attribute', 'value with single quotes', ' ', '', '', "'")], [], '', false),
+    new XmlText('\n  '),
+    new XmlElement('element-with-cdata', [], [new XmlCData('<html>')]),
     new XmlText('\n')
   ])
 ]);
