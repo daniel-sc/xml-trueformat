@@ -3,7 +3,6 @@
 // -------------------------
 
 // Text node.
-import { XmlNode } from './model/xmlNode';
 import { XmlText } from './model/xmlText';
 import { XmlComment } from './model/xmlComment';
 import { XmlProcessing } from './model/xmlProcessing';
@@ -25,7 +24,7 @@ export class XmlParser {
 
   static parse(xml: string): XmlDocument {
     const parser = new XmlParser(xml);
-    const children: XmlNode[] = [];
+    const children: (XmlChildNode | XmlDoctype)[] = [];
     while (parser.pos < parser.input.length) {
       const node = parser.parseNode();
       if (node) {

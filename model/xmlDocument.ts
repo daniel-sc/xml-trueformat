@@ -1,9 +1,10 @@
 import { XmlNode } from './xmlNode';
-import { XmlElement } from './xmlElement';
+import { XmlChildNode, XmlElement } from './xmlElement';
+import { XmlDoctype } from './xmlDoctype';
 
 /// The document node is simply a container for a sequence of XML nodes.
 export class XmlDocument extends XmlNode {
-  constructor(public children: XmlNode[]) {
+  constructor(public children: (XmlChildNode | XmlDoctype)[]) {
     super();
   }
 
