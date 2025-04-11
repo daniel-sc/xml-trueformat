@@ -110,7 +110,7 @@ describe('XmlParser', () => {
       expect(nodes).toEqual([new XmlText('Hello, '), new XmlElement('my', [], [], ' ', true), new XmlText(' World!')]);
     });
     it('should parse angular template', () => {
-      const fragment = `<div someDirective></div>
+      const fragment = `<div someDirective #someRef></div>
   <app-radio-group [formControl]="control">
     <app-radio-button *ngFor="let item of dialogData.items" [value]="item">
       {{ displayLabel(item) }}
@@ -119,8 +119,10 @@ describe('XmlParser', () => {
   <button type="button" (click)="confirmChoice()" i18n="@@APPLY_BUTTON">OK</button>
 `;
       const nodes = XmlParser.parseFragment(fragment);
+
+      expect(nodes.map(n => n.toString()).join('')).toEqual(fragment);
       expect(nodes).toEqual([
-        new XmlElement('div', [new XmlAttribute('someDirective', '', ' ', '', '', '"', false)], [], ''),
+        new XmlElement('div', [new XmlAttribute('someDirective', '', ' ', '', '', '"', false), new XmlAttribute('#someRef', '', ' ', '', '', '"', false)], [], ''),
         new XmlText('\n  '),
         new XmlElement(
           'app-radio-group',

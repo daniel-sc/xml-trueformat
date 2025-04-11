@@ -1,6 +1,6 @@
 {
   "name": "xml-trueformat",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "description": "XML parser that 100% retains all formatting for creating identical XML on roundtrips",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.mjs",
