@@ -18,6 +18,7 @@ Check out the following [blog post](https://dev.to/danielsc/deep-dive-xml-truefo
 - Retains attribute quotes (single or double) and whitespace before and after the attribute name
 - Retains XML processing instructions (including the XML declaration)
 - Retains CDATA sections
+- Parses Angular templates and other HTML/XML-like files
 
 ## Example
 
@@ -37,7 +38,7 @@ Will get parsed by `XmlParser.parse(..)` to:
 
 ```ts
 new XmlDocument([
-  new XmlProcessing('xml',' ', 'version="1.0" encoding="UTF-8"'),
+  new XmlProcessing('xml', ' ', 'version="1.0" encoding="UTF-8"'),
   new XmlText('\n'),
   new XmlElement('root', [], [
     new XmlText('\n  '),

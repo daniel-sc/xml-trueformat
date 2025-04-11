@@ -14,5 +14,5 @@ describe('XmlDocument', () => {
       const document = new XmlDocument([]);
       expect(() => document.getRootElement()).toThrowError('No root element found');
     });
-  })
+  });
 });

@@ -7,22 +7,8 @@ describe('XmlElement', () => {
   describe('toString', () => {
     it('Element with attributes and text', () => {
       const attrDate = new XmlAttribute('date', '2025-02-22', ' ', '', ' ', '"');
-      const attrAuthor = new XmlAttribute(
-        'author',
-        'John Doe',
-        ' ',
-        ' ',
-        '',
-        '\''
-      );
-      const elem = new XmlElement(
-        'note',
-        [attrDate, attrAuthor],
-        [new XmlText('Some content')],
-        ' ',
-        false,
-        ''
-      );
+      const attrAuthor = new XmlAttribute('author', 'John Doe', ' ', ' ', '', "'");
+      const elem = new XmlElement('note', [attrDate, attrAuthor], [new XmlText('Some content')], ' ', false, '');
       const expected = `<note date= "2025-02-22" author ='John Doe' >Some content</note>`;
       expect(elem.toString()).toBe(expected);
     });
@@ -34,14 +20,7 @@ describe('XmlElement', () => {
     });
 
     it('Nested elements', () => {
-      const child = new XmlElement(
-        'child',
-        [],
-        [new XmlText('Text')],
-        ' ',
-        false,
-        ''
-      );
+      const child = new XmlElement('child', [], [new XmlText('Text')], ' ', false, '');
       const root = new XmlElement('root', [], [child], '', false, '');
       const expected = `<root><child >Text</child></root>`;
       expect(root.toString()).toBe(expected);
@@ -59,11 +38,7 @@ describe('XmlElement', () => {
     it('should add child after the given child', () => {
       const existingChild1 = new XmlElement('child1', [], []);
       const existingChild2 = new XmlElement('child2', [], []);
-      const element = new XmlElement(
-        'test',
-        [],
-        [existingChild1, existingChild2]
-      );
+      const element = new XmlElement('test', [], [existingChild1, existingChild2]);
       const child = new XmlElement('child');
       element.addElement(child, { after: existingChild1 });
       expect(element.children).toEqual([existingChild1, child, existingChild2]);
@@ -72,11 +47,7 @@ describe('XmlElement', () => {
     it('should add child before the given child', () => {
       const existingChild1 = new XmlElement('child1', [], []);
       const existingChild2 = new XmlElement('child2', [], []);
-      const element = new XmlElement(
-        'test',
-        [],
-        [existingChild1, existingChild2]
-      );
+      const element = new XmlElement('test', [], [existingChild1, existingChild2]);
       const child = new XmlElement('child');
       element.addElement(child, { before: existingChild2 });
       expect(element.children).toEqual([existingChild1, child, existingChild2]);
@@ -92,48 +63,38 @@ describe('XmlElement', () => {
     describe('guessFormatting', () => {
       it('should add whitespace according previous node with after', () => {
         const existingChild = new XmlElement('child');
-        const element = new XmlElement(
-          'test',
-          [],
-          [new XmlText('\n  '), existingChild, new XmlText('\n')]
-        );
+        const element = new XmlElement('test', [], [new XmlText('\n  '), existingChild, new XmlText('\n')]);
         const child = new XmlElement('new-child');
         element.addElement(child, {
-          after: existingChild
+          after: existingChild,
         });
-        expect(element.toString()).toEqual(
-          `<test>\n  <child></child>\n  <new-child></new-child>\n</test>`
-        );
+        expect(element.toString()).toEqual(`<test>\n  <child></child>\n  <new-child></new-child>\n</test>`);
       });
       it('should add whitespace according previous node with before', () => {
         const existingChild = new XmlElement('child');
-        const element = new XmlElement(
-          'test',
-          [],
-          [new XmlText('\n  '), existingChild, new XmlText('\n')]
-        );
+        const element = new XmlElement('test', [], [new XmlText('\n  '), existingChild, new XmlText('\n')]);
         const child = new XmlElement('new-child');
         element.addElement(child, {
-          before: existingChild
+          before: existingChild,
         });
-        expect(element.toString()).toEqual(
-          `<test>\n  <new-child></new-child>\n  <child></child>\n</test>`
-        );
+        expect(element.toString()).toEqual(`<test>\n  <new-child></new-child>\n  <child></child>\n</test>`);
       });
       it('should handle trailing whitespace', () => {
-        const element = new XmlElement('root', [], [
-          new XmlText('\n  '),
-          new XmlElement('child'),
-          new XmlText('\n')
-        ]);
+        const element = new XmlElement('root', [], [new XmlText('\n  '), new XmlElement('child'), new XmlText('\n')]);
         element.addElement(new XmlElement('new-child'));
-        expect(element).toEqual(new XmlElement('root', [], [
-          new XmlText('\n  '),
-          new XmlElement('child'),
-          new XmlText('\n  '),
-          new XmlElement('new-child'),
-          new XmlText('\n')
-        ]));
+        expect(element).toEqual(
+          new XmlElement(
+            'root',
+            [],
+            [
+              new XmlText('\n  '),
+              new XmlElement('child'),
+              new XmlText('\n  '),
+              new XmlElement('new-child'),
+              new XmlText('\n'),
+            ],
+          ),
+        );
       });
     });
   });
@@ -163,7 +124,7 @@ describe('XmlElement', () => {
     });
 
     it('should add the attribute with analogous formatting', () => {
-      const element = new XmlElement('test', [new XmlAttribute('key', 'value', '\n  ', ' ', ' ', '\'')]);
+      const element = new XmlElement('test', [new XmlAttribute('key', 'value', '\n  ', ' ', ' ', "'")]);
       element.setAttributeValue('another-key', 'value');
       expect(element.toString()).toBe(`<test
   key = 'value'

@@ -1,5 +1,3 @@
-
-
 export * from './model/xmlAttribute';
 export * from './model/xmlCData';
 export * from './model/xmlComment';

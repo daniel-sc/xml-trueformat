@@ -25,14 +25,7 @@ export class XmlAttribute {
 
   toString(): string {
     return (
-      this.leadingWs +
-      this.name +
-      this.wsBeforeEqual +
-      '=' +
-      this.wsAfterEqual +
-      this.quote +
-      this.value +
-      this.quote
+      this.leadingWs + this.name + this.wsBeforeEqual + '=' + this.wsAfterEqual + this.quote + this.value + this.quote
     );
   }
 }

@@ -85,9 +85,7 @@ export class XmlParser {
     const wsAfterTarget = this.readWhitespace();
     const end = this.input.indexOf('?>', this.pos);
     if (end === -1) {
-      throw new Error(
-        `Unterminated processing instruction starting at position ${start}`,
-      );
+      throw new Error(`Unterminated processing instruction starting at position ${start}`);
     }
     const data = this.input.substring(this.pos, end);
     this.pos = end + 2; // skip "?>"
@@ -99,9 +97,7 @@ export class XmlParser {
     this.pos += 9; // skip "<![CDATA["
     const end = this.input.indexOf(']]>', this.pos);
     if (end === -1) {
-      throw new Error(
-        `Unterminated CDATA section starting at position ${start}`,
-      );
+      throw new Error(`Unterminated CDATA section starting at position ${start}`);
     }
     const cdataContent = this.input.substring(this.pos, end);
     this.pos = end + 3; // skip "]]>"
@@ -113,9 +109,7 @@ export class XmlParser {
     this.pos += 9; // skip "<!DOCTYPE"
     const end = this.input.indexOf('>', this.pos);
     if (end === -1) {
-      throw new Error(
-        `Unterminated DOCTYPE declaration starting at position ${start}`,
-      );
+      throw new Error(`Unterminated DOCTYPE declaration starting at position ${start}`);
     }
     const content = this.input.substring(this.pos, end).trim();
     this.pos = end + 1; // skip ">"
@@ -159,16 +153,12 @@ export class XmlParser {
           const startVal = this.pos;
           const endVal = this.input.indexOf(quote, this.pos);
           if (endVal === -1) {
-            throw new Error(
-              `Unterminated attribute value for "${attrName}" starting at position ${startVal}`,
-            );
+            throw new Error(`Unterminated attribute value for "${attrName}" starting at position ${startVal}`);
           }
           value = this.input.substring(startVal, endVal);
           this.pos = endVal + 1; // skip closing quote
         } else {
-          throw new Error(
-            `Expected quote character at position ${this.pos} for attribute "${attrName}"`,
-          );
+          throw new Error(`Expected quote character at position ${this.pos} for attribute "${attrName}"`);
         }
       }
       attributes.push(
@@ -202,9 +192,7 @@ export class XmlParser {
         }
         const child = this.parseNode();
         if (child instanceof XmlDoctype) {
-          throw new Error(
-            `Unexpected node type XmlDoctype as child of <${tagName}> at position ${this.pos}`,
-          );
+          throw new Error(`Unexpected node type XmlDoctype as child of <${tagName}> at position ${this.pos}`);
         }
         if (child) {
           children.push(child);
@@ -225,33 +213,19 @@ export class XmlParser {
         if (this.peek() === '>') {
           this.pos++; // skip ">"
         } else {
-          throw new Error(
-            `Expected '>' at end of closing tag for <${tagName}> at position ${this.pos}`,
-          );
+          throw new Error(`Expected '>' at end of closing tag for <${tagName}> at position ${this.pos}`);
         }
       } else {
-        throw new Error(
-          `Unterminated element <${tagName}> starting at position ${start}`,
-        );
+        throw new Error(`Unterminated element <${tagName}> starting at position ${start}`);
       }
     }
-    return new XmlElement(
-      tagName,
-      attributes,
-      children,
-      attrTrailingWs,
-      selfClosing,
-      closeTagWs,
-    );
+    return new XmlElement(tagName, attributes, children, attrTrailingWs, selfClosing, closeTagWs);
   }
 
   // Reads a name (letters, digits, underscore, hyphen, colon, period).
   readName(): string {
     const start = this.pos;
-    while (
-      this.pos < this.input.length &&
-      /[A-Za-z0-9_\-.:]/.test(this.input[this.pos])
-    ) {
+    while (this.pos < this.input.length && /[A-Za-z0-9_\-.:\[\]*()]/.test(this.input[this.pos])) {
       this.pos++;
     }
     return this.input.substring(start, this.pos);

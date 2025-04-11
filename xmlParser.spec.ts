@@ -10,7 +10,6 @@ import { XmlCData } from './model/xmlCData';
 
 describe('XmlParser', () => {
   describe('parse', () => {
-
     it('Full document roundtrip', () => {
       const xmlSource = `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE note SYSTEM "Note.dtd">
@@ -34,28 +33,44 @@ describe('XmlParser', () => {
   <element-with-cdata><![CDATA[<html>]]></element-with-cdata>
 </root>`;
       const doc = XmlParser.parse(xml);
-      expect(doc).toEqual(new XmlDocument([
-        new XmlProcessing('xml',' ', 'version="1.0" encoding="UTF-8"'),
-        new XmlText('\n'),
-        new XmlElement('root', [], [
-          new XmlText('\n  '),
-          new XmlComment(' my comment '),
-          new XmlText('\n  '),
-          new XmlElement('self-closing', [new XmlAttribute('attribute', 'value with double quotes')], [], ' ', true),
-          new XmlText('\n  '),
-          new XmlElement('non-self-closing', [new XmlAttribute('attribute', 'value with single quotes', ' ', '', '', "'")], [], '', false),
-          new XmlText('\n  '),
-          new XmlElement('element-with-cdata', [], [new XmlCData('<html>')]),
-          new XmlText('\n')
-        ])
-      ]));
+      expect(doc).toEqual(
+        new XmlDocument([
+          new XmlProcessing('xml', ' ', 'version="1.0" encoding="UTF-8"'),
+          new XmlText('\n'),
+          new XmlElement(
+            'root',
+            [],
+            [
+              new XmlText('\n  '),
+              new XmlComment(' my comment '),
+              new XmlText('\n  '),
+              new XmlElement(
+                'self-closing',
+                [new XmlAttribute('attribute', 'value with double quotes')],
+                [],
+                ' ',
+                true,
+              ),
+              new XmlText('\n  '),
+              new XmlElement(
+                'non-self-closing',
+                [new XmlAttribute('attribute', 'value with single quotes', ' ', '', '', "'")],
+                [],
+                '',
+                false,
+              ),
+              new XmlText('\n  '),
+              new XmlElement('element-with-cdata', [], [new XmlCData('<html>')]),
+              new XmlText('\n'),
+            ],
+          ),
+        ]),
+      );
     });
 
     it('Error cases - mismatched closing tag', () => {
       const badXml = `<note><to>Jane</from></note>`;
-      expect(() => XmlParser.parse(badXml)).toThrow(
-        'Unterminated element <to> starting at position 6'
-      );
+      expect(() => XmlParser.parse(badXml)).toThrow('Unterminated element <to> starting at position 6');
     });
 
     it('Error cases - unterminated comment', () => {
@@ -80,10 +95,50 @@ describe('XmlParser', () => {
     it('should parse fragment starting with text', () => {
       const fragment = 'Hello, <my /> World!';
       const nodes = XmlParser.parseFragment(fragment);
+      expect(nodes).toEqual([new XmlText('Hello, '), new XmlElement('my', [], [], ' ', true), new XmlText(' World!')]);
+    });
+    it('should parse angular template', () => {
+      const fragment = `<div someDirective></div>
+  <app-radio-group [formControl]="control">
+    <app-radio-button *ngFor="let item of dialogData.items" [value]="item">
+      {{ displayLabel(item) }}
+    </app-radio-button>
+  </app-radio-group>
+  <button type="button" (click)="confirmChoice()" i18n="@@APPLY_BUTTON">OK</button>
+`;
+      const nodes = XmlParser.parseFragment(fragment);
       expect(nodes).toEqual([
-        new XmlText('Hello, '),
-        new XmlElement('my', [], [], ' ', true),
-        new XmlText(' World!')
+        new XmlElement('div', [new XmlAttribute('someDirective', '')], [], ''),
+        new XmlText('\n  '),
+        new XmlElement(
+          'app-radio-group',
+          [new XmlAttribute('[formControl]', 'control')],
+          [
+            new XmlText('\n    '),
+            new XmlElement(
+              'app-radio-button',
+              [new XmlAttribute('*ngFor', 'let item of dialogData.items'), new XmlAttribute('[value]', 'item')],
+              [new XmlText('\n      {{ displayLabel(item) }}\n    ')],
+              '',
+              false,
+            ),
+            new XmlText('\n  '),
+          ],
+          '',
+        ),
+        new XmlText('\n  '),
+        new XmlElement(
+          'button',
+          [
+            new XmlAttribute('type', 'button'),
+            new XmlAttribute('(click)', 'confirmChoice()'),
+            new XmlAttribute('i18n', '@@APPLY_BUTTON'),
+          ],
+          [new XmlText('OK')],
+          '',
+          false,
+        ),
+        new XmlText('\n'),
       ]);
     });
   });
