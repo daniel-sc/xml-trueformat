@@ -90,6 +90,18 @@ describe('XmlParser', () => {
       const doc = XmlParser.parse(xml);
       expect(doc.toString()).toBe(xml);
     });
+    it('should round trip attribute without value', () => {
+      const xml = `<root><element attribute></element><other  attribute2  attribute3  /></root>`;
+      const doc = XmlParser.parse(xml);
+      const roundtrip = doc.toString();
+      expect(roundtrip).toEqual(xml);
+    });
+    it('should round trip attribute with empty value', () => {
+      const xml = `<root><element attribute=""></element></root>`;
+      const doc = XmlParser.parse(xml);
+      const roundtrip = doc.toString();
+      expect(roundtrip).toEqual(xml);
+    });
   });
   describe('parseFragment', () => {
     it('should parse fragment starting with text', () => {
@@ -108,7 +120,7 @@ describe('XmlParser', () => {
 `;
       const nodes = XmlParser.parseFragment(fragment);
       expect(nodes).toEqual([
-        new XmlElement('div', [new XmlAttribute('someDirective', '')], [], ''),
+        new XmlElement('div', [new XmlAttribute('someDirective', '', ' ', '', '', '"', false)], [], ''),
         new XmlText('\n  '),
         new XmlElement(
           'app-radio-group',

@@ -144,6 +144,7 @@ export class XmlParser {
       let wsAfterEqual = '';
       let quote = '"';
       let value = '';
+      let hasValue = true;
       if (this.peek() === '=') {
         this.pos++; // skip "="
         wsAfterEqual = this.readWhitespace();
@@ -160,6 +161,8 @@ export class XmlParser {
         } else {
           throw new Error(`Expected quote character at position ${this.pos} for attribute "${attrName}"`);
         }
+      } else {
+        hasValue = false;
       }
       attributes.push(
         new XmlAttribute(
@@ -169,6 +172,7 @@ export class XmlParser {
           wsBeforeEqual,
           wsAfterEqual,
           quote === '"' || quote === "'" ? quote : '"',
+          hasValue,
         ),
       );
     }

@@ -36,6 +36,7 @@ The following XML:
 
 Will get parsed by `XmlParser.parse(..)` to:
 
+<!-- prettier-ignore-start -->
 ```ts
 new XmlDocument([
   new XmlProcessing('xml', ' ', 'version="1.0" encoding="UTF-8"'),
@@ -53,6 +54,7 @@ new XmlDocument([
   ])
 ]);
 ```
+<!-- prettier-ignore-end -->
 
 And serializing this again with `XmlDocument.toString()` will exactly give the original XML!
 

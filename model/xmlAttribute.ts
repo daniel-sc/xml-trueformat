@@ -13,6 +13,7 @@ export class XmlAttribute {
     public wsBeforeEqual: string = '',
     public wsAfterEqual: string = '',
     public quote: '"' | "'" = '"',
+    public hasValue = true,
   ) {}
 
   unescapeValue(): string {
@@ -25,7 +26,10 @@ export class XmlAttribute {
 
   toString(): string {
     return (
-      this.leadingWs + this.name + this.wsBeforeEqual + '=' + this.wsAfterEqual + this.quote + this.value + this.quote
+      this.leadingWs +
+      this.name +
+      this.wsBeforeEqual +
+      (this.hasValue ? '=' + this.wsAfterEqual + this.quote + this.value + this.quote : '')
     );
   }
 }
