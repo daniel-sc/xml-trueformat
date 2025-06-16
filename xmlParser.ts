@@ -231,7 +231,7 @@ export class XmlParser {
   // Reads a name (letters, digits, underscore, hyphen, colon, period).
   readName(): string {
     const start = this.pos;
-    while (this.pos < this.input.length && /[A-Za-z0-9_\-.:\[\]*()#]/.test(this.input[this.pos])) {
+    while (this.pos < this.input.length && /[A-Za-z0-9_\-.:\[\]*()#@]/.test(this.input[this.pos])) {
       this.pos++;
     }
     return this.input.substring(start, this.pos);

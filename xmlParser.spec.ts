@@ -111,8 +111,8 @@ describe('XmlParser', () => {
     });
     it('should parse angular template', () => {
       const fragment = `<div someDirective #someRef></div>
-  <app-radio-group [formControl]="control">
-    <app-radio-button *ngFor="let item of dialogData.items" [value]="item">
+  <app-radio-group [formControl]="control" [@myAnimation]="state">
+    <app-radio-button *ngFor="let item of dialogData.items" [value]="item" [@myAnimationWithoutState]>
       {{ displayLabel(item) }}
     </app-radio-button>
   </app-radio-group>
@@ -120,18 +120,30 @@ describe('XmlParser', () => {
 `;
       const nodes = XmlParser.parseFragment(fragment);
 
-      expect(nodes.map(n => n.toString()).join('')).toEqual(fragment);
+      expect(nodes.map((n) => n.toString()).join('')).toEqual(fragment);
       expect(nodes).toEqual([
-        new XmlElement('div', [new XmlAttribute('someDirective', '', ' ', '', '', '"', false), new XmlAttribute('#someRef', '', ' ', '', '', '"', false)], [], ''),
+        new XmlElement(
+          'div',
+          [
+            new XmlAttribute('someDirective', '', ' ', '', '', '"', false),
+            new XmlAttribute('#someRef', '', ' ', '', '', '"', false),
+          ],
+          [],
+          '',
+        ),
         new XmlText('\n  '),
         new XmlElement(
           'app-radio-group',
-          [new XmlAttribute('[formControl]', 'control')],
+          [new XmlAttribute('[formControl]', 'control'), new XmlAttribute('[@myAnimation]', 'state')],
           [
             new XmlText('\n    '),
             new XmlElement(
               'app-radio-button',
-              [new XmlAttribute('*ngFor', 'let item of dialogData.items'), new XmlAttribute('[value]', 'item')],
+              [
+                new XmlAttribute('*ngFor', 'let item of dialogData.items'),
+                new XmlAttribute('[value]', 'item'),
+                new XmlAttribute('[@myAnimationWithoutState]', '', ' ', '', '', '"', false),
+              ],
               [new XmlText('\n      {{ displayLabel(item) }}\n    ')],
               '',
               false,
