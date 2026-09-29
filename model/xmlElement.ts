@@ -7,6 +7,7 @@ import { XmlText } from './xmlText';
 import { XmlComment } from './xmlComment';
 import { XmlProcessing } from './xmlProcessing';
 import { XmlCData } from './xmlCData';
+import { escapeXml } from '../util/escape';
 
 export type XmlChildNode = XmlText | XmlComment | XmlProcessing | XmlCData | XmlElement;
 
@@ -115,7 +116,7 @@ export class XmlElement extends XmlNode {
       this.attributes.push(
         new XmlAttribute(
           name,
-          unescapedValue,
+          escapeXml(unescapedValue),
           copyFromAttribute?.leadingWs,
           copyFromAttribute?.wsBeforeEqual,
           copyFromAttribute?.wsAfterEqual,
