@@ -66,3 +66,7 @@ This project is written in Typescript and uses Bun.
 bun install
 bun test
 ```
+
+### Releasing
+
+Run `bun run release` from a clean, up-to-date `main` branch to test, build, version, publish to npm, and push tags, then publish the GitHub Release draft it opens.

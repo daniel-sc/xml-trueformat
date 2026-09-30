@@ -17,6 +17,8 @@
     "build:esm": "bun build index.ts --outfile=dist/esm/index.mjs --format=esm --dts",
     "build:cjs": "bun build index.ts --outdir dist/cjs --format=cjs",
     "test": "bun test --coverage",
+    "test:release": "bun run typecheck && bun run test",
+    "release": "np",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
     "prepack": "bun run build:types && bun run build:esm && bun run build:cjs"
@@ -31,8 +33,14 @@
     "url": "https://github.com/daniel-sc/xml-trueformat/issues"
   },
   "license": "MIT",
+  "np": {
+    "branch": "main",
+    "packageManager": "bun",
+    "testScript": "test:release"
+  },
   "devDependencies": {
     "@types/bun": "^1.2.3",
+    "np": "12.1.1",
     "prettier": "3.5.2",
     "typescript": "^5.7.3"
   }
