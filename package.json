@@ -29,6 +29,10 @@
   ],
   "author": "Daniel Schreiber <daniel-schreiber@gmx.de>",
   "homepage": "https://github.com/daniel-sc/xml-trueformat",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daniel-sc/xml-trueformat.git"
+  },
   "bugs": {
     "url": "https://github.com/daniel-sc/xml-trueformat/issues"
   },
